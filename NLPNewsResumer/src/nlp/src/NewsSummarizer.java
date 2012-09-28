@@ -145,7 +145,7 @@ public class NewsSummarizer {
 		in.close();	
 	}
 	/**
-	 * Compiles a String with a report on the diferent information of the news text
+	 * Compiles a String with a report on the different information of the news text
 	 *
 	 * @return report
 	 */
@@ -165,8 +165,9 @@ public class NewsSummarizer {
 		return report;
 		
 	}
+	
 	/**
-	 * Compiles a String with a report on the diferent information of the news text
+	 * Compiles a String with a report on the different information of the news text
 	 *
 	 * @return report
 	 */

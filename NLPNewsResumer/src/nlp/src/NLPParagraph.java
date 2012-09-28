@@ -13,9 +13,9 @@ import edu.stanford.nlp.process.Morphology;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 /**
- * This class manages all the methos for each paragraph. 
+ * This class manages all the methods for each paragraph. 
  * This class handles the POS Tagger of Stanford
- * This class uses the class NLPParagrapherNER to handle the NER Lybrary of Stanford (Because of incompatibility with the tow lybraries)
+ * This class uses the class NLPParagrapherNER to handle the NER Lybrary of Stanford (Because of incompatibility with the tow libraries)
  * For example return the verbs of the paragraph, or the words on the lexicon
  *
  * @author juan.
