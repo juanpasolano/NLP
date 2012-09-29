@@ -1,15 +1,9 @@
 package nlp.src;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
 
 import edu.stanford.nlp.ie.AbstractSequenceClassifier;
-import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.ling.TaggedWord;
-import edu.stanford.nlp.process.Morphology;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 /**
@@ -59,6 +53,10 @@ public class NLPParagraph {
 	 */
 	NLPParagraphNER nLPParagraphNER;
 	/**
+	 * Object used because the NER Library cannot work along the POS Tagger
+	 */
+	NLPParagraphPOS nLPParagraphPOS;
+	/**
 	 * Constructor of the Object NLPParagraph created for each of the paragraph of the news
 	 *
 	 * @param inputParagraph
@@ -85,12 +83,13 @@ public class NLPParagraph {
 		this.time = this.nLPParagraphNER.returnEntities(NLPParagraphNER.TIME);
 		
 		//Getting other values with the POS Tagger
-		this.verbs = returnVerbs();
-		this.adjectives = returnAdjectives();
-		this.cardinalNumbers = returnCardinalNumbers();
-		this.wordsOnLexicon = returnWordsOnLexicon(lexicon);
-		this.wordsOnTitle = reurnsWordsOnTitle(newsTitle);
-		this.paragraphNumbered = returnParagraphNumberded(inputParagraph);
+		this.nLPParagraphPOS = new NLPParagraphPOS(this.paragraphItself, inputTagger);
+		this.verbs = nLPParagraphPOS.returnVerbs();
+		this.adjectives = nLPParagraphPOS.returnAdjectives();
+		this.cardinalNumbers = nLPParagraphPOS.returnCardinalNumbers();
+		this.wordsOnLexicon = nLPParagraphPOS.returnWordsOnLexicon(lexicon);
+		this.wordsOnTitle = nLPParagraphPOS.reurnsWordsOnTitle(newsTitle);
+		this.paragraphNumbered = nLPParagraphPOS.returnParagraphNumberded(inputParagraph);
 		
 		//Combaining arrays into an ordered array for SVO Structure
 		this.ACTORS = order4Arrays(this.organizations,this.people,this.wordsOnLexicon,this.location);
@@ -197,6 +196,7 @@ public class NLPParagraph {
 	 *
 	 * @return verbs
 	 */
+	/*
 	public ArrayList<String> returnVerbs()
 	{
 		ArrayList<String> verbs = new ArrayList<String>();
@@ -228,11 +228,13 @@ public class NLPParagraph {
         }
 		return verbs;
 	}
+	*/
 	/**
 	 * Returns an Array of Verbs using POS Tagger (JJ, JJR, JJS)
 	 *
 	 * @return adjectives
 	 */
+	/*
 	public ArrayList<String> returnAdjectives()
 	{
 		ArrayList<String> adjectives = new ArrayList<String>();
@@ -261,13 +263,14 @@ public class NLPParagraph {
         }
 		return adjectives;
 	}
-	
+	*/
 	
 	/**
 	 * Returns Cardinal Numbers using POS Tagger (CD)
 	 * 
 	 * @return cardinalNumbers
 	 */
+	/*
 	public ArrayList<String> returnCardinalNumbers()
 	{
 		ArrayList<String> cardinalNumbers = new ArrayList<String>();
@@ -316,13 +319,14 @@ public class NLPParagraph {
 		return cardinalNumbers;
 		//return cardinalNumbersOut;
 	}
-	
+	*/
 	/**
 	 * Returns all the words in the sentence given a lexicon
 	 *
 	 * @param lexicon
 	 * @return wordsOnLexicon
 	 */
+	/*
 	public ArrayList<String> returnWordsOnLexicon(ArrayList<String> lexicon)
 	{
 		ArrayList<String> wordsOnLexicon = new ArrayList<String>();
@@ -347,12 +351,14 @@ public class NLPParagraph {
       }
        return wordsOnLexicon;
 	}
+	*/
 	/**
 	 * Returns bervs on Title present in the paragraph
 	 *
 	 * @param newsTitle
 	 * @return wordsOnTitle
 	 */
+	/*
 	public ArrayList<String> reurnsWordsOnTitle(String newsTitle){
 		ArrayList<String> wordsOnTitle = new ArrayList<String>();
 		Morphology mp = new Morphology();
@@ -388,12 +394,14 @@ public class NLPParagraph {
 		return wordsOnTitle;
 		
 	}
+	*/
 	/**
 	 * Returns the paragraph numberd by words
 	 *
 	 * @param inputParagraph
 	 * @return
 	 */
+	/*
 	private String returnParagraphNumberded(String inputParagraph) {
 		String paragraphNumberedString = "";
 		String[] paragraphNumberedArray = inputParagraph.split(" ");
@@ -404,7 +412,7 @@ public class NLPParagraph {
 		}
 		return paragraphNumberedString;
 	}
-
+*/
 
 	/**
 	 * Returns one Array from 3 others. It also orders the 3 arrays 
