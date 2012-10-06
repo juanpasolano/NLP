@@ -17,7 +17,7 @@ public class NLPParagraphPOS {
 	 */
 	private String paragraphItself;
 
-	private ArrayList<String> money;
+	
 
 	/**
 	 * Constructor necessary to build an object NLPParagraph
@@ -32,7 +32,42 @@ public class NLPParagraphPOS {
 		paragraphItself = paragraph;
 		tagger = inputTagger;
 	}
-	
+	/**
+	 * Returns an Array of Verbs using POS Tagger (VBG, VBD, VBG, VBN, VBP, VBZ)
+	 *
+	 * @return verbs
+	 */
+	public ArrayList<String> returnNames()
+	{
+		ArrayList<String> names = new ArrayList<String>();
+		Reader reader = new StringReader(this.paragraphItself);
+        List<List<HasWord>> sentences = MaxentTagger.tokenizeText(reader);
+
+		
+        String paragraphNumbered = returnParagraphNumberded(this.paragraphItself);
+        String[] prw = paragraphNumbered.split(" ");
+		  
+        for (List<HasWord> sentence : sentences) {
+          ArrayList<TaggedWord> tSentence = this.tagger.tagSentence(sentence);
+          System.out.println(tSentence);
+          for (int i = 0; i < tSentence.size(); i++) {
+        	  String taggedWord = tSentence.get(i)+"";        	 
+        	  if(taggedWord.endsWith("/NNP"))
+        	  {
+        		  for (int j = 0; j < prw.length; j++) {
+        			  String[] w = prw[j].split("/");
+        			  String[] t = taggedWord.split("/");
+        			  if (t[0].equalsIgnoreCase(w[0])) {
+                		  names.add(taggedWord+"/"+w[w.length-1]);
+					}
+        			  
+					
+				}
+        	  }
+			}
+        }
+		return names;
+	}
 
 	/**
 	 * Returns an Array of Verbs using POS Tagger (VBG, VBD, VBG, VBN, VBP, VBZ)
@@ -51,7 +86,7 @@ public class NLPParagraphPOS {
 		  
         for (List<HasWord> sentence : sentences) {
           ArrayList<TaggedWord> tSentence = this.tagger.tagSentence(sentence);
-          ////System.out.println(Sentence.listToString(tSentence, false));
+          System.out.println(tSentence);
           for (int i = 0; i < tSentence.size(); i++) {
         	  String taggedWord = tSentence.get(i)+"";        	 
         	  if(taggedWord.endsWith("/VB")||taggedWord.endsWith("/VBD")||taggedWord.endsWith("/VBG")||taggedWord.endsWith("/VBN")||taggedWord.endsWith("/VBP")||taggedWord.endsWith("/VBZ"))
@@ -81,7 +116,7 @@ public class NLPParagraphPOS {
 		Reader reader = new StringReader(this.paragraphItself);
         List<List<HasWord>> sentences = MaxentTagger.tokenizeText(reader);
 
-		System.out.println(sentences);
+		//System.out.println(sentences);
         
         String paragraphNumbered = returnParagraphNumberded(this.paragraphItself);
         String[] prw = paragraphNumbered.split(" ");
@@ -110,9 +145,10 @@ public class NLPParagraphPOS {
 	/**
 	 * Returns Cardinal Numbers using POS Tagger (CD)
 	 * 
+	 * @param money This usally comes form this.nLPParagraphNER.returnEntities(NLPParagraphNER.MONEY);
 	 * @return cardinalNumbers
 	 */
-	public ArrayList<String> returnCardinalNumbers()
+	public ArrayList<String> returnCardinalNumbers(ArrayList<String> money)
 	{
 		ArrayList<String> cardinalNumbers = new ArrayList<String>();
 		ArrayList<String> cardinalNumbersOut = new ArrayList<String>();
@@ -126,13 +162,13 @@ public class NLPParagraphPOS {
         	  if(taggedWord.endsWith("/CD"))
         	  {
         		  cardinalNumbers.add(taggedWord.replace("/CD",""));
-        		 // //System.out.println(taggedWord);
+        		  System.out.println(taggedWord);
         	  }
 			}
         }
         String moneyString = "";
-        for (int i = 0; i < this.money.size(); i++) {
-			moneyString += this.money.get(i);
+        for (int i = 0; i < money.size(); i++) {
+			moneyString += money.get(i);
 		}
         for (int i = 0; i < cardinalNumbers.size(); i++) {
         	
@@ -157,6 +193,7 @@ public class NLPParagraphPOS {
     			}
             }
 		}
+        System.out.println(moneyString);
 		return cardinalNumbers;
 		//return cardinalNumbersOut;
 	}

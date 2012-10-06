@@ -117,7 +117,7 @@ public class SVOStructure {
 	public ArrayList<String> getObjectSurrownd(int threshold){
 		ArrayList<String> wordsSurrownding = new ArrayList<String>();
 		
-		String[] SVO = getSVOStructure();
+		String[] SVO = this.getSVOStructure();
 		System.out.println(SVO);
 		//its posible that we dont find an object
 		String[] verbSplit = SVO[SVO.length-2].split("/");

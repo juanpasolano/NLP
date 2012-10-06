@@ -1,5 +1,6 @@
 package nlp.src;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ public class NLPParagraph {
 	private String paragraphNumbered;
 	private ArrayList<String> verbs;
 	private ArrayList<String> adjectives;
+	private ArrayList<String> names;
 	private ArrayList<String> cardinalNumbers;
 	private ArrayList<String> organizations;
 	private ArrayList<String> dates;
@@ -86,7 +88,8 @@ public class NLPParagraph {
 		this.nLPParagraphPOS = new NLPParagraphPOS(this.paragraphItself, inputTagger);
 		this.verbs = nLPParagraphPOS.returnVerbs();
 		this.adjectives = nLPParagraphPOS.returnAdjectives();
-		this.cardinalNumbers = nLPParagraphPOS.returnCardinalNumbers();
+		this.names = nLPParagraphPOS.returnNames();
+		this.cardinalNumbers = nLPParagraphPOS.returnCardinalNumbers(this.money);
 		this.wordsOnLexicon = nLPParagraphPOS.returnWordsOnLexicon(lexicon);
 		this.wordsOnTitle = nLPParagraphPOS.reurnsWordsOnTitle(newsTitle);
 		this.paragraphNumbered = nLPParagraphPOS.returnParagraphNumberded(inputParagraph);
@@ -100,7 +103,7 @@ public class NLPParagraph {
 		this.svoResult = svo.getSVOStructure();
 		this.surrowndings = svo.getObjectSurrownd(3);
 		
-		
+		this.newLexicon();
 		
 	}
 	
@@ -189,230 +192,29 @@ public class NLPParagraph {
 		
 		return resumen;
 	}
-
-
-	/**
-	 * Returns an Array of Verbs using POS Tagger (VBG, VBD, VBG, VBN, VBP, VBZ)
-	 *
-	 * @return verbs
-	 */
-	/*
-	public ArrayList<String> returnVerbs()
-	{
-		ArrayList<String> verbs = new ArrayList<String>();
-		Reader reader = new StringReader(this.paragraphItself);
-        List<List<HasWord>> sentences = MaxentTagger.tokenizeText(reader);
-
-		
-        String paragraphNumbered = returnParagraphNumberded(this.paragraphItself);
-        String[] prw = paragraphNumbered.split(" ");
-		  
-        for (List<HasWord> sentence : sentences) {
-          ArrayList<TaggedWord> tSentence = this.tagger.tagSentence(sentence);
-          ////System.out.println(Sentence.listToString(tSentence, false));
-          for (int i = 0; i < tSentence.size(); i++) {
-        	  String taggedWord = tSentence.get(i)+"";        	 
-        	  if(taggedWord.endsWith("/VB")||taggedWord.endsWith("/VBD")||taggedWord.endsWith("/VBG")||taggedWord.endsWith("/VBN")||taggedWord.endsWith("/VBP")||taggedWord.endsWith("/VBZ"))
-        	  {
-        		  for (int j = 0; j < prw.length; j++) {
-        			  String[] w = prw[j].split("/");
-        			  String[] t = taggedWord.split("/");
-        			  if (t[0].equalsIgnoreCase(w[0])) {
-                		  verbs.add(taggedWord+"/"+w[w.length-1]);
-					}
-        			  
-					
-				}
-        	  }
-			}
-        }
-		return verbs;
-	}
-	*/
-	/**
-	 * Returns an Array of Verbs using POS Tagger (JJ, JJR, JJS)
-	 *
-	 * @return adjectives
-	 */
-	/*
-	public ArrayList<String> returnAdjectives()
-	{
-		ArrayList<String> adjectives = new ArrayList<String>();
-		Reader reader = new StringReader(this.paragraphItself);
-        List<List<HasWord>> sentences = MaxentTagger.tokenizeText(reader);
-        
-        String paragraphNumbered = returnParagraphNumberded(this.paragraphItself);
-        String[] prw = paragraphNumbered.split(" ");
-        
-        for (List<HasWord> sentence : sentences) {
-          ArrayList<TaggedWord> tSentence = this.tagger.tagSentence(sentence);
-
-          for (int i = 0; i < tSentence.size(); i++) {
-        	  String taggedWord = tSentence.get(i)+"";
-        	  if(taggedWord.endsWith("/JJ")||taggedWord.endsWith("/JJR")||taggedWord.endsWith("/JJS"))
-        	  {
-        		  for (int j = 0; j < prw.length; j++) {
-        			  String[] w = prw[j].split("/");
-        			  String[] t = taggedWord.split("/");
-        			  if (t[0].equalsIgnoreCase(w[0])) {
-        				  adjectives.add(taggedWord+"/"+w[w.length-1]);
-					}
-        		 }
-        	  }
-			}
-        }
-		return adjectives;
-	}
-	*/
 	
-	/**
-	 * Returns Cardinal Numbers using POS Tagger (CD)
-	 * 
-	 * @return cardinalNumbers
-	 */
-	/*
-	public ArrayList<String> returnCardinalNumbers()
-	{
-		ArrayList<String> cardinalNumbers = new ArrayList<String>();
-		ArrayList<String> cardinalNumbersOut = new ArrayList<String>();
-		Reader reader = new StringReader(this.paragraphItself);
-        List<List<HasWord>> sentences = MaxentTagger.tokenizeText(reader);
-        for (List<HasWord> sentence : sentences) {
-          ArrayList<TaggedWord> tSentence = this.tagger.tagSentence(sentence);
-          ////System.out.println(Sentence.listToString(tSentence, false));
-          for (int i = 0; i < tSentence.size(); i++) {
-        	  String taggedWord = tSentence.get(i)+"";
-        	  if(taggedWord.endsWith("/CD"))
-        	  {
-        		  cardinalNumbers.add(taggedWord.replace("/CD",""));
-        		 // //System.out.println(taggedWord);
-        	  }
-			}
-        }
-        String moneyString = "";
-        for (int i = 0; i < this.money.size(); i++) {
-			moneyString += this.money.get(i);
-		}
-        for (int i = 0; i < cardinalNumbers.size(); i++) {
-        	
-        	Reader reader1 = new StringReader(moneyString);
-            List<List<HasWord>> sentences1 = MaxentTagger.tokenizeText(reader1);
-            for (List<HasWord> sentence : sentences1) {
-              ArrayList<TaggedWord> tSentence = this.tagger.tagSentence(sentence);
-              ////System.out.println(Sentence.listToString(tSentence, false));
-              for (int j = 0; j < tSentence.size(); j++) {
-            	  String taggedWord = tSentence.get(j)+"";
-            	  
-            	  for (int k = 0; k < cardinalNumbers.size(); k++) {
-            		  if (taggedWord.equalsIgnoreCase(cardinalNumbers.get(k))) {
-      					//nothing happens
-                  	  }else{
-                  		  cardinalNumbersOut.add(cardinalNumbers.get(k));
-                  	  }
-				}
-            	  
-            	  
-            	 
-    			}
-            }
-		}
-		return cardinalNumbers;
-		//return cardinalNumbersOut;
-	}
-	*/
-	/**
-	 * Returns all the words in the sentence given a lexicon
-	 *
-	 * @param lexicon
-	 * @return wordsOnLexicon
-	 */
-	/*
-	public ArrayList<String> returnWordsOnLexicon(ArrayList<String> lexicon)
-	{
-		ArrayList<String> wordsOnLexicon = new ArrayList<String>();
-		Morphology mp = new Morphology();
-        String noCommasSample = this.paragraphItself.replaceAll(",","");
-        String noPointsSample = noCommasSample.replaceAll("\\.",""); 
-        String[] arrayWordsforStem = noPointsSample.split(" ");
-        for (int i = 0; i < arrayWordsforStem.length; i++) {
-        	////System.out.println(arrayWordsforStem[i]);
-        	for (int j = 0; j < lexicon.size(); j++) {
-        		String stem = mp.stem(arrayWordsforStem[i]);
-        		if(stem != null)
-        		{
-	        		if(mp.stem(arrayWordsforStem[i]).equalsIgnoreCase(lexicon.get(j)))
-	        		{
-	        			wordsOnLexicon.add(arrayWordsforStem[i]+"/"+i);
-	        			//System.out.println(lexicon.get(j));
-	        			break;
-	        		}
-        		}
-			}
-      }
-       return wordsOnLexicon;
-	}
-	*/
-	/**
-	 * Returns bervs on Title present in the paragraph
-	 *
-	 * @param newsTitle
-	 * @return wordsOnTitle
-	 */
-	/*
-	public ArrayList<String> reurnsWordsOnTitle(String newsTitle){
-		ArrayList<String> wordsOnTitle = new ArrayList<String>();
-		Morphology mp = new Morphology();
+
+	
+	public  ArrayList<String> newLexicon(){
 		
-		//Deliting commas and points from title
-        String noCommasSample = newsTitle.replaceAll(",","");
-        String noPointsSample = noCommasSample.replaceAll("\\.",""); 
-        String[] arrayWordsTitle = noPointsSample.split(" ");
-        
-        //Deliting commas and points from paragraphs
-        noCommasSample = this.paragraphItself.replaceAll(",","");
-        noPointsSample = noCommasSample.replaceAll("\\.",""); 
-        String[] paragraphWords = noPointsSample.split(" ");
-		
-		for (int i = 0; i < arrayWordsTitle.length; i++) {
-        	////System.out.println(arrayWordsforStem[i]);
-			String titleStemed = mp.stem(arrayWordsTitle[i]);
-			
-        	for (int j = 0; j < paragraphWords.length; j++) {
-        		
-    			String paragraphStemed = mp.stem(paragraphWords[j]);
-    			
-        		if(titleStemed.equalsIgnoreCase(paragraphStemed))
-        		{
-        			wordsOnTitle.add(paragraphStemed);
-        			//System.out.println(lexicon.get(j));
-        			//break;
-        		}
-        		
-			}
+		ArrayList<String> newLexiconWordsFull =  new ArrayList<String>();
+		ArrayList<String> newLexiconWords =  new ArrayList<String>();
+		newLexiconWordsFull.addAll(this.people);
+		newLexiconWordsFull.addAll(this.organizations);
+		newLexiconWordsFull.addAll(this.wordsOnLexicon);
+		newLexiconWordsFull.addAll(this.names);
+		for (int i = 0; i < newLexiconWordsFull.size(); i++) {
+			String[] wordSplitted = newLexiconWordsFull.get(i).split("/");
+			String wordStem = wordSplitted[0];
+			newLexiconWords.add(wordStem);
 		}
+		System.out.print("newLexicon");
+		System.out.println(newLexiconWords);
 		
-		return wordsOnTitle;
+		return newLexiconWords;
 		
 	}
-	*/
-	/**
-	 * Returns the paragraph numberd by words
-	 *
-	 * @param inputParagraph
-	 * @return
-	 */
-	/*
-	private String returnParagraphNumberded(String inputParagraph) {
-		String paragraphNumberedString = "";
-		String[] paragraphNumberedArray = inputParagraph.split(" ");
-		for (int i = 0; i < paragraphNumberedArray.length; i++) {
-			//System.out.println(paragraphNumberedArray[i]);
-			String parsing = paragraphNumberedArray[i]+"/"+i+" ";
-			paragraphNumberedString += ""+parsing;
-		}
-		return paragraphNumberedString;
-	}
-*/
+
 
 	/**
 	 * Returns one Array from 3 others. It also orders the 3 arrays 
